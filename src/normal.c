@@ -4,7 +4,7 @@
 #include <err.h>
 #include <time.h>
 
-#define INPUT_FILE "data.txt"
+#define INPUT_FILE "results/data.txt"
 
 
 int parse_args(int argc, char *argv[]) {

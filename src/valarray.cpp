@@ -12,7 +12,7 @@ using namespace std;
 
 #define ROWS_MULTIPLICITY 4
 
-#define INPUT_FILE "data.txt"
+#define INPUT_FILE "results/data.txt"
 
 
 int parse_args(int argc, char *argv[]) {

@@ -3,4 +3,5 @@ asm/
 obj/
 
 data.txt
+*.csv
 
