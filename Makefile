@@ -9,18 +9,21 @@ RANDOM_SEED=7
 
 
 # first number of input rows for experiment
-EXP_RANGE_BEGIN=100000
+EXP_RANGE_BEGIN=20000
 
 # Incrementation step of input rows number for the experiment
 # 	NOTE: should be multiple of 4
-EXP_STEP=100
+EXP_STEP=20000
 
 # Number of different input rows number used in the experiment 
 # (It is the number of time points produced for each executable)
-EXP_STEPS_NUMBER=10
+EXP_STEPS_NUMBER=40
 
 # Number of probes with the same input rows number
 EXP_PROBES=10
+
+# Filename for CSV file where should be stored experiment results
+RES_CSV_FILE=experiments.csv
 
 #-------------------------------------
 
@@ -29,7 +32,6 @@ CC_PROGS = gcc_vector normal
 
 RESULTS_DIR=results
 DATA_FILE=data.txt
-RES_CSV_FILE=experiments.csv
 
 SRC_DIR=src
 CC=gcc
@@ -45,7 +47,7 @@ _OBJ = normal.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
-all: build generate_data run_experiments
+all: build generate_data run_experiments plot_data
 
 build: $(CXX_PROGS) $(CC_PROGS)
 
@@ -97,7 +99,7 @@ $(CC_PROGS): %: %.o %_o3.o %_o3.s %.s create_bin_dir
 	$(CC) -o $(BINDIR)/$@_o3 $(ODIR)/$@_o3.o $(CFLAGS)
 
 
-.PHONY: clean build generate_data create_obj_dir create_bin_dir create_asm_dir
+.PHONY: clean build generate_data run_experiments create_obj_dir create_bin_dir create_asm_dir create_results_dir
 
 
 generate_data: create_results_dir
@@ -105,6 +107,9 @@ generate_data: create_results_dir
 
 run_experiments: create_results_dir
 	python3 $(SRC_DIR)/run_experiments.py $(RESULTS_DIR)/$(RES_CSV_FILE) $(EXP_RANGE_BEGIN) $(EXP_STEP) $(EXP_STEPS_NUMBER) $(EXP_PROBES)
+
+plot_data: create_results_dir
+	gnuplot -e "input_file='$(RESULTS_DIR)/$(RES_CSV_FILE)'" $(SRC_DIR)/plot.gp
 
 clean:
 	rm -f $(ASMDIR)/* $(BINDIR)/* $(RESULTS_DIR)/* $(ODIR)/*.o *~ core $(PROGS) $(DATA_FILE) *.csv
